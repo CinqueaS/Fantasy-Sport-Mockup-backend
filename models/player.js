@@ -1,8 +1,8 @@
-// models/footBallPlayer.js
+// models/player.js
 
 const mongoose = require('mongoose');
 
-const footBallPlayerSchema = new mongoose.Schema({
+const playerSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -48,8 +48,8 @@ const footBallPlayerSchema = new mongoose.Schema({
 /* I got this from chatGPT, hope it works, remove and lmk if it does not work pls */
 
 // calculates the value of fantasyPoints based off the yards, touchdowns, and interceptions
-footBallPlayerSchema.virtual('fantasyPoints').get(function() {
+playerSchema.virtual('fantasyPoints').get(function() {
     return (this.yards / 10) + (this.touchdowns * 6) - (this.interceptions * 2);
 });
 
-module.exports = mongoose.model('footBallPlayer', footBallPlayerSchema);
+module.exports = mongoose.model('Player', playerSchema);

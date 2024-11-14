@@ -9,6 +9,8 @@ const cors = require('cors')
 const testJWTRouter = require('./controllers/test-jwt')
 const usersRouter = require('./controllers/users')
 const profilesRouter = require('./controllers/profiles');
+const teamsRouter = require('./controllers/teams.js');
+const playersRouter = require('./controllers/players.js');
 
 mongoose.connect(process.env.MONGODB_URI)
 
@@ -24,9 +26,12 @@ app.use(cors())
 // GET http://localhost:3000/test-jwt
 // GET http://localhost:3000/users
 // GET http://localhost:3000/profiles/:userId
+
 app.use('/test-jwt', testJWTRouter)
 app.use('/users', usersRouter)
 app.use('/profiles', profilesRouter);
+app.use('/teams', teamsRouter);
+app.use('/players', playersRouter)
 
 app.listen(3000, () => {
     console.log('The express app is ready!')
