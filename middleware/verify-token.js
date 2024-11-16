@@ -8,9 +8,10 @@ function verifyToken(req, res, next) {
         const token = req.headers.authorization.split(' ')[1] // Fixes array technicality
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        //Sets the user to the decoded variable (???)
         // Assign decoded payload to req.user
-        // give user object for any route that requires it (????)
+        //Sets the user to the decoded variable
+        // give user object for any route that requires it
+        
         req.user = decoded;
         // Call next() to invoke the next middleware function
         next()

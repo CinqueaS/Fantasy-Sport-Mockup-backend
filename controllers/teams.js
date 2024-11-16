@@ -1,15 +1,20 @@
-// controllers/teams.js
-
 const express = require('express');
 const verifyToken = require('../middleware/verify-token.js');
-const Team = require('../models/team.js');
+const Team = require('../models/user.js');
 const router = express.Router();
 
 // ========== Public Routes ===========
 
+/* Some routes MIGHT need to be moved here, but don't do it until we get errors on front end */
+
 // ========= Protected Routes =========
 
 router.use(verifyToken);
+
+/* I think every route under this will only execute if someone is logged in
+If problems arise for guest users, move the relevent path ABOVE verify token into public routes */
+
+// CREATE a new team, automatically sets owner to whoever is logged in
 
 router.post('/', async (req, res) => {
     try {
@@ -23,10 +28,13 @@ router.post('/', async (req, res) => {
     }
 });
 
+/* Access ALL teams... if you are logged in */
+
 router.get('/', async (req, res) => {
     try {
         const teams = await Team.find({})
         .populate('owner_id')
+        .populate('team_member_ids')
         .sort({ createdAt: 'desc' });
         res.status(200).json(teams);
     } catch (error) {
@@ -34,16 +42,19 @@ router.get('/', async (req, res) => {
     }
 });
 
-// controllers/teams.js
+/* Access SPECIFIC team by its own ID */
 
 router.get('/:teamId', async (req, res) => {
     try {
-      const team = await Team.findById(req.params.teamId).populate('owner_id');
+      const team = await Team.findById(req.params.teamId).populate('owner_id').populate('team_member_ids');
       res.status(200).json(team);
     } catch (error) {
       res.status(500).json(error);
     }
 });
+
+/* UPDATE a specific team by its ID 
+Only works if you are logged in as its owner */
 
 router.put('/:teamId', async (req, res) => {
     try {
@@ -71,6 +82,9 @@ router.put('/:teamId', async (req, res) => {
       res.status(500).json(error);
     }
 });
+
+/* DELETE a team from the database by its ID 
+Only works if you are logged in as its owner */
 
 router.delete('/:teamId', async (req, res) => {
     try {

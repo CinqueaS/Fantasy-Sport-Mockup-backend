@@ -1,5 +1,3 @@
-// controllers/players.js
-
 const Player = require('../models/player.js')
 const express = require('express')
 const router = express.Router()
@@ -10,6 +8,7 @@ const router = express.Router()
 
 // CREATE - POST - /players
 // Creates a new player object for the API
+
 router.post('/', async (req, res) => {
     // res.json({ message: 'Create route'})
     let newPlayerObject = req.body
@@ -115,9 +114,7 @@ router.put('/:playerId', async (req, res) => {
             res.status(500).json({ error: error.message });
         }
     }
-  })
-
-
+})
 
 
 // Export the router at the bottom of the file

@@ -1,6 +1,4 @@
-/* EXAMPLE of how we might use token verification, for protected route */
 
-// controllers/profiles.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
@@ -9,6 +7,7 @@ const verifyToken = require('../middleware/verify-token')
 /* With verifyToken, unverified users are given the "Invalid token". message */
 
 router.get('/:userId', verifyToken, async (req, res) => {
+  
   try {
 
     if (req.user._id !== req.params.userId) {
