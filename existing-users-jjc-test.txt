@@ -1,0 +1,79 @@
+FORMAT
+(User)
+USERNAME
+(Pass)
+PASSWORDHERE
+(ID)
+IDHERE
+(Token)
+TOKENHERE
+
+
+================================
+
+(User)
+Viktor Novikov
+(Pass)
+p@ssW0rD!
+(ID)
+673a4dda9d5294bce916d675
+(Token)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlZpa3RvciBOb3Zpa292IiwiX2lkIjoiNjczYTRkZGE5ZDUyOTRiY2U5MTZkNjc1IiwiaWF0IjoxNzMxODc0MjY3fQ.cHljjdCgJcarslhmAxWxPzy40606Z4kGIGBvoMDa5g4
+
+(User)
+Sierra Knox
+(Pass)
+rac31c@rs
+(ID)
+673a4e379d5294bce916d678
+(Token)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNpZXJyYSBLbm94IiwiX2lkIjoiNjczYTRlMzc5ZDUyOTRiY2U5MTZkNjc4IiwiaWF0IjoxNzMxODc0MzU5fQ.07wdjDRMMvMF_4UoDc4NNhh_ku_djgINfxXPel6aDkQ
+
+
+(User)
+Robert Knox
+(Pass)
+scarface
+(ID)
+673a4e6b9d5294bce916d67b
+(Token)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJvYmVydCBLbm94IiwiX2lkIjoiNjczYTRlNmI5ZDUyOTRiY2U5MTZkNjdiIiwiaWF0IjoxNzMxODc0NDExfQ.Qapwe-t-JggCbkjFaXFIJEYHlap9CqWXSleEA6wwVb8
+
+
+(User)
+Tobias Rieper
+(Pass)
+47kilograms
+(ID)
+673a4e959d5294bce916d67e
+(Token)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRvYmlhcyBSaWVwZXIiLCJfaWQiOiI2NzNhNGU5NTlkNTI5NGJjZTkxNmQ2N2UiLCJpYXQiOjE3MzE4NzQ0NTR9.GOcJCNOip8CquigTckuf7JPwuwBbDQKGfWvtkq4qJTI
+
+
+(User)
+Silvio Caruso
+(Pass)
+gynophobia
+(ID)
+673a4eae9d5294bce916d681
+(Token)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNpbHZpbyBDYXJ1c28iLCJfaWQiOiI2NzNhNGVhZTlkNTI5NGJjZTkxNmQ2ODEiLCJpYXQiOjE3MzE4NzQ0Nzh9.lDLBhN7lN0snZfqks2BqoQ1grEd4KsYtM9NeOwVU_IU
+
+
+{
+  "username": "Victor Delgado"
+  "password": "Hippo!"
+}
+(ID)
+673a50ecdc9b529ff6d0641d
+(TOKEN)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlZpY3RvciBEZWxnYWRvIiwiX2lkIjoiNjczYTUwZWNkYzliNTI5ZmY2ZDA2NDFkIiwiaWF0IjoxNzMxODc1MDUyfQ.ckw5i4aRykWdLff_5eMZnsCVmUZX1FdiSm_p37hG0G0
+
+{
+  "username": "Diana Burnwood",
+  "password": "untouchable!"
+}
+(ID)
+673a521bcc88c95b68f3ea84
+(TOKEN)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkRpYW5hIEJ1cm53b29kIiwiX2lkIjoiNjczYTUyMWJjYzg4Yzk1YjY4ZjNlYTg0IiwiaWF0IjoxNzMxODc1NDIwfQ.9k8W6kk3OoEel_RCfeOyyzR6ofIvcgI1G3vt3bdw9dQ

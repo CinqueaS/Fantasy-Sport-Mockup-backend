@@ -1,3 +1,5 @@
+const mongoose = require('mongoose')
+
 /* THIS FILE IS OBSOLETE IF NESTING IN user.js WORKS CORRECTLY */
 
 const teamSchema = new mongoose.Schema(
@@ -14,7 +16,22 @@ const teamSchema = new mongoose.Schema(
         // We might calculate this on front end instead
     },
     { timestamps: true }
-);
+)
+
+/* I got this from chatGPT, hope it works, remove and lmk if it does not work pls
+if it doesn't we calculate fantasy points on the front end */
+
+// calculates the value of team's fantasyPoints based off the individual values
+
+/* 
+teamSchema.virtual('totalFantasyPoints').get(function() {
+    let total = 0
+    for (member of this.team_member_ids) {
+        total += member.fantasyPoints
+    }
+    return total
+})
+ */
 
 
-module.exports = mongoose.model('Team', teamSchema);
+module.exports = mongoose.model('Team', teamSchema)

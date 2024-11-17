@@ -1,7 +1,7 @@
 
-const express = require('express');
-const router = express.Router();
-const User = require('../models/user');
+const express = require('express')
+const router = express.Router()
+const User = require('../models/user.js')
 const verifyToken = require('../middleware/verify-token')
 
 /* With verifyToken, unverified users are given the "Invalid token". message */
@@ -14,19 +14,19 @@ router.get('/:userId', verifyToken, async (req, res) => {
         return res.status(401).json({ error: "Unauthorized"})
     }
 
-    const user = await User.findById(req.params.userId);
+    const user = await User.findById(req.params.userId)
     if (!user) {
-      res.status(404);
-      throw new Error('Profile not found.');
+      res.status(404)
+      throw new Error('Profile not found.')
     }
-    res.json({ user });
+    res.json({ user })
   } catch (error) {
     if (res.statusCode === 404) {
-      res.status(404).json({ error: error.message });
+      res.status(404).json({ error: error.message })
     } else {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message })
     }
   }
-});
+})
 
-module.exports = router;
+module.exports = router

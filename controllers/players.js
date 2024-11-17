@@ -6,6 +6,8 @@ const router = express.Router()
 
 /* The index-slash ('/') is being used because we are ALREADY inside of '/players' */
 
+/* Not using JWT token, so no auth required to create player object */
+
 // CREATE - POST - /players
 // Creates a new player object for the API
 
@@ -78,7 +80,7 @@ router.delete('/:playerId', async (req, res) => {
             res.status(404)
             throw new Error(`Player with ID of ${targetPlayerID} not found, therefore, cannot be deleted`)
           }
-        res.status(200).json(`Player with ID of ${targetPlayerID} has been DELETED`) // 200 OK
+        res.status(200).json(`${deletionTargetPlayer.name} (ID of ${targetPlayerID}) has been DELETED`) // 200 OK
 
       } catch (error) {
         // Add error handling code for 404 errors
@@ -100,18 +102,34 @@ router.put('/:playerId', async (req, res) => {
 
     try {
         // Add { new: true } as the third argument, to reload the updated player object
-        const updatedPlayer = await Player.findByIdAndUpdate(targetPlayerID, newPlayerData, { new: true, })
-        if (!updatedPlayer) {
+        const foundPlayer = await Player.findByIdAndUpdate(targetPlayerID, newPlayerData, { new: true, })
+        if (!foundPlayer) {
             res.status(404)
             throw new Error(`Player with ID of ${targetPlayerID} not found, therefore, cannot be UPDATED`)
         }
+
+        // if the yards, touchdowns, or interceptions were updated, will recalculate fantasyPoints
+        foundPlayer.yards = newPlayerData.yards || foundPlayer.yards 
+        foundPlayer.touchdowns = newPlayerData.touchdowns || foundPlayer.touchdowns
+        foundPlayer.interceptions = newPlayerData.interceptions || foundPlayer.interceptions
+
+        totalPoints = (foundPlayer.yards / 10) + (foundPlayer.touchdowns * 6) - (foundPlayer.interceptions * 2)
+        foundPlayer.fantasyPoints = totalPoints
+
+        // Saves again to update fantasyPoints
+        // Must rename player variable
+        const updatedPlayer = await foundPlayer.save()
+
+
         res.status(200).json(updatedPlayer)
+
+
     } catch (error) {
         // Add code for errors
         if (res.statusCode === 404) {
-            res.json({ error: error.message });
+            res.json({ error: error.message })
         } else {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ error: error.message })
         }
     }
 })

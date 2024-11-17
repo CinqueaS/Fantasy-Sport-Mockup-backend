@@ -3,7 +3,7 @@ const router = express.Router()
 // Add bcrypt and the user model
 const bcrypt = require('bcrypt') // bcrypt will encrypt passwords for security purposes
 const jwt = require('jsonwebtoken') // Web token
-const User = require('../models/user') // import User model
+const User = require('../models/user.js') // import User model
 
 // We will salt the password with this many random characters
 const SALT_LENGTH = 12
@@ -26,14 +26,18 @@ router.post('/signup', async (req, res) => {
         const user = await User.create({
             username: newUserName,
             hashedPassword: bcrypt.hashSync(newUserPassword, SALT_LENGTH)
-        })
+        }).populate('team_id')
+
+        // Should populate the team information after user is created
+        const populatedUser = await User.findById(user._id).populate('team_id')
+
         // Automatically signs said user in
         const token = jwt.sign(
             { username: user.username, _id: user._id },
             process.env.JWT_SECRET
-          );
+          )
 
-        res.status(201).json({ user, token })
+        res.status(201).json({ populatedUser, token })
 
     } catch (error) { // error handling
         res.status(400).json({ error: error.message })
@@ -48,7 +52,7 @@ router.post('/signin', async (req, res) => {
     const existingUserPassword = req.body.password
 
     try {
-      const user = await User.findOne({ username: existingUserName });
+      const user = await User.findOne({ username: existingUserName })
       // If user exists, AND their entered password matches the hashed password, let them in
 
       if (user && bcrypt.compareSync(existingUserPassword, user.hashedPassword)) {
@@ -56,14 +60,20 @@ router.post('/signin', async (req, res) => {
             {username: user.username, _id: user._id},
             process.env.JWT_SECRET
         )
+
+        // Populate the team field on sign-in
+        // IDK where to attach this - JJC
+        const populatedUser = await User.findById(user._id).populate('team_id')
+
+        /* res.status(200).json({ populatedUser, token }) */ //This would include the user's team data I guess
         res.status(200).json({ token })
 
       } else { // Otherwise, don't let them in
-        res.status(401).json({ error: 'Invalid username or password.' });
+        res.status(401).json({ error: 'Invalid username or password.' })
       }
 
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message })
     }
   })
 

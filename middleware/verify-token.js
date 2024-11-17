@@ -6,18 +6,18 @@ function verifyToken(req, res, next) {
     try {
         
         const token = req.headers.authorization.split(' ')[1] // Fixes array technicality
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
         // Assign decoded payload to req.user
         //Sets the user to the decoded variable
         // give user object for any route that requires it
         
-        req.user = decoded;
+        req.user = decoded
         // Call next() to invoke the next middleware function
         next()
 
     } catch (error) {
-        res.status(401).json({ error: 'Invalid token.' });
+        res.status(401).json({ error: 'Invalid token.' })
     }
 }
 
