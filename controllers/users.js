@@ -240,7 +240,7 @@ router.delete('/:userId/teams/:teamId', async (req, res) => {
       await player.save()
     }
 
-    user.team.remove({ _id: req.params.teamId })
+    user.team.deleteOne({ _id: req.params.teamId })
 
     await user.save()
 
