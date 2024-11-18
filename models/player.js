@@ -7,7 +7,7 @@ const playerSchema = new mongoose.Schema(
         position: { type: String, required: true },
         species: { type: String, default: "Human" },
 
-        isDrafted: { type: Boolean, default: false }, // DO NOT provide when making new object
+        isDrafted: { type: Boolean, default: false }, // DO NOT provide when making new object, or always make false
         isSupernatural: { type: Boolean, required: true },
 
         heightCm: { type: Number, required: true },
@@ -17,7 +17,7 @@ const playerSchema = new mongoose.Schema(
         touchdowns: { type: Number, required: true },
         interceptions: { type: Number, required: true },
         
-        fantasyPoints: { type: Number } // Calculated dynamically, do not include when posting or updating a player
+        fantasyPoints: { type: Number } // Calculated dynamically, do not include when creating or updating a player
     },
     { timestamps: true }
 )

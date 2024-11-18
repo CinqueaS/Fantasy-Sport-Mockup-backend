@@ -108,19 +108,8 @@ router.put('/:playerId', async (req, res) => {
             throw new Error(`Player with ID of ${targetPlayerID} not found, therefore, cannot be UPDATED`)
         }
 
-        // if the yards, touchdowns, or interceptions were updated, will recalculate fantasyPoints
-        foundPlayer.yards = newPlayerData.yards || foundPlayer.yards 
-        foundPlayer.touchdowns = newPlayerData.touchdowns || foundPlayer.touchdowns
-        foundPlayer.interceptions = newPlayerData.interceptions || foundPlayer.interceptions
-
-        totalPoints = (foundPlayer.yards / 10) + (foundPlayer.touchdowns * 6) - (foundPlayer.interceptions * 2)
-        foundPlayer.fantasyPoints = totalPoints
-
-        // Saves again to update fantasyPoints
-        // Must rename player variable
-        const updatedPlayer = await foundPlayer.save()
-
-
+        // Recalculates fantasy points if any of the score values are updated
+        updatedPlayer = await updateFantasyPoints(foundPlayer, newPlayerData)
         res.status(200).json(updatedPlayer)
 
 
@@ -133,6 +122,23 @@ router.put('/:playerId', async (req, res) => {
         }
     }
 })
+
+
+
+async function updateFantasyPoints(foundPlayer, newPlayerData) {
+
+    // if the yards, touchdowns, or interceptions were updated, will recalculate fantasyPoints
+    foundPlayer.yards = newPlayerData.yards || foundPlayer.yards 
+    foundPlayer.touchdowns = newPlayerData.touchdowns || foundPlayer.touchdowns
+    foundPlayer.interceptions = newPlayerData.interceptions || foundPlayer.interceptions
+
+    totalPoints = (foundPlayer.yards / 10) + (foundPlayer.touchdowns * 6) - (foundPlayer.interceptions * 2)
+    foundPlayer.fantasyPoints = totalPoints
+    // Saves again to update fantasyPoints
+    // Must rename player variable
+    const updatedPlayer = await foundPlayer.save()
+    return updatedPlayer
+}
 
 
 // Export the router at the bottom of the file
