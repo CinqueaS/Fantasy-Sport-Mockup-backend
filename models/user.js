@@ -51,6 +51,21 @@ userSchema.set('toJSON', {
     }
 })
 
+/* I got this from chatGPT, hope it works, remove and lmk if it does not work pls
+if it doesn't we calculate fantasy points on the front end */
+
+// Should calculate the value of team's fantasyPoints based off the individual values
+
+/* 
+teamSchema.virtual('totalFantasyPoints').get(function() {
+    let total = 0
+    for (member of this.team_member_ids) {
+        total += member.fantasyPoints
+    }
+    return total
+})
+ */
+
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
