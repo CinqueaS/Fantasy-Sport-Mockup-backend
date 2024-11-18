@@ -11,7 +11,7 @@ const teamSchema = new mongoose.Schema(
         motto: {type: String, required: true },
         description: {type: String, required: false },
         playingStyle: {type: String, required: true },
-        /* totalFantasyPoints: {type: Number } */
+        totalFantasyPoints: {type: Number, default: 0} 
         // We might calculate this on front end instead
     },
     { timestamps: true }

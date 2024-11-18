@@ -185,16 +185,16 @@ router.put('/:userId/teams/:teamId/addplayer/:playerId', async (req, res) => {
     team.motto = req.body.motto || team.motto
     team.description = req.body.description || team.description
     team.playingStyle = req.body.playingStyle || team.playingStyle
-
+   
     if (player) {
       player.owner_id = req.params.userId
       team.team_member_ids.push(req.params.playerId)
       player.isDrafted = true
-    }
-
+      team.totalFantasyPoints = await updateFantasyPoints(team)
+      }
     await user.save()
     await player.save()
-
+      
     res.status(200).json({ message: `Added ${player.name} to ${user.username}'s team!` })
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -215,6 +215,7 @@ router.put('/:userId/teams/:teamId/removeplayer/:playerId', async (req, res) => 
       player.isDrafted = false
       player.owner_id = null
       team.team_member_ids.remove({ _id: req.params.playerId })
+      team.totalFantasyPoints = await updateFantasyPoints(team)
     }
 
     await user.save()
@@ -250,4 +251,18 @@ router.delete('/:userId/teams/:teamId', async (req, res) => {
   }
 })
 
+async function updateFantasyPoints(foundTeam) {
+  let sum = 0
+  const teamMemberIds = foundTeam.team_member_ids
+
+  for (teamMemberId of teamMemberIds) {
+    player = await Player.findById(teamMemberId)
+    points = player.fantasyPoints
+    sum += points
+    console.log(player)
+    console.log(typeof player.fantasyPoints)
+  }
+
+  return sum
+}
 module.exports = router
