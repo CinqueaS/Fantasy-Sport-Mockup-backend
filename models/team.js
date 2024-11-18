@@ -21,7 +21,7 @@ const teamSchema = new mongoose.Schema(
 /* I got this from chatGPT, hope it works, remove and lmk if it does not work pls
 if it doesn't we calculate fantasy points on the front end */
 
-// calculates the value of team's fantasyPoints based off the individual values
+// Should calculate the value of team's fantasyPoints based off the individual values
 
 /* 
 teamSchema.virtual('totalFantasyPoints').get(function() {

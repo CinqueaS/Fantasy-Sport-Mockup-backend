@@ -9,6 +9,53 @@ const User = require('../models/user.js') // import User model
 const SALT_LENGTH = 12
 
 
+/* ================= PUBLIC INFO ROUTES ===================== */
+
+/* GET  and SHOW routes for users, to make API calls in relation to teams and public info easier 
+http://localhost:3000/users
+http://localhost:3000/users/:userId */
+
+// READ - GET - /users
+// Reads the contents of the route. a GET route
+router.get('/', async (req, res) => {
+  try {
+      const foundUsers = await User.find() // Locates and spits out ALL user objects
+      res.status(200).json(foundUsers)
+  } catch (error) {
+      res.status(500).json({ error: error.message }) // 500 Internal Server Error
+  }
+})
+
+// READ - GET - /users/:userId
+// SHOW route, shows a specific user
+router.get('/:userId', async (req, res) => {
+  let targetUserID = req.params.userId
+
+  try {
+      // Add query to find a single user
+      const foundUser = await User.findById(targetUserID)
+
+      // If no user, show an error
+      if (!foundUser) {
+          res.status(404)
+          throw new Error(`User with ID of ${targetUserID} not found, therefore, cannot be shown`)
+        }
+      res.status(200).json(foundUser) // 200 OK
+
+    } catch (error) {
+      // Add error handling code for 404 errors
+      if (res.statusCode === 404) {
+          res.json({ error: error.message })
+        } else {
+          // Add else statement to handle all other errors
+          res.status(500).json({ error: error.message })
+        }
+    }
+})
+
+
+/* =========== SIGN IN AND SIGN UP ROUTES ================== */
+
 /* User sign up route, creates user object */
 /* POST http://localhost:3000/users/signup */
 
