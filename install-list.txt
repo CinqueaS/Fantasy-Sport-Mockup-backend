@@ -1,0 +1,5 @@
+npm init --y
+npm i
+npm i express mongoose dotenv
+npm i jsonwebtoken 
+npm i bcrypt
