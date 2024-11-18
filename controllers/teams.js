@@ -3,6 +3,8 @@ const verifyToken = require('../middleware/verify-token.js')
 const Team = require('../models/user.js')
 const router = express.Router()
 
+/* THIS FILE IS OBSOLETE IF NESTING IN USER.JS WORKS CORRECTLY */
+
 // ========== Public Routes ===========
 
 /* Some routes MIGHT need to be moved here, but don't do it until we get errors on front end */
@@ -24,7 +26,7 @@ router.post('/', async (req, res) => {
       res.status(201).json(team)
     } catch (error) {
       console.log(error)
-      res.status(500).json(error)
+      res.status(500).json({ error: error.message })
     }
 })
 
@@ -38,7 +40,7 @@ router.get('/', async (req, res) => {
         .sort({ createdAt: 'desc' })
         res.status(200).json(teams)
     } catch (error) {
-        res.status(500).json(error)
+        res.status(500).json({ error: error.message })
     }
 })
 
@@ -49,7 +51,7 @@ router.get('/:teamId', async (req, res) => {
       const team = await Team.findById(req.params.teamId).populate('owner_id').populate('team_member_ids')
       res.status(200).json(team)
     } catch (error) {
-      res.status(500).json(error)
+      res.status(500).json({ error: error.message })
     }
 })
 
@@ -79,7 +81,7 @@ router.put('/:teamId', async (req, res) => {
       // Issue JSON response:
       res.status(200).json(updatedTeam)
     } catch (error) {
-      res.status(500).json(error)
+      res.status(500).json({ error: error.message })
     }
 })
 
@@ -97,7 +99,7 @@ router.delete('/:teamId', async (req, res) => {
       const deletedTeam = await Team.findByIdAndDelete(req.params.teamId)
       res.status(200).json(deletedTeam)
     } catch (error) {
-      res.status(500).json(error)
+      res.status(500).json({ error: error.message })
     }
 })
   

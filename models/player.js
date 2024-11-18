@@ -6,6 +6,7 @@ const playerSchema = new mongoose.Schema(
         gender: { type: String, required: true },
         position: { type: String, required: true },
         species: { type: String, default: "Human" },
+        owner_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
         isDrafted: { type: Boolean, default: false }, // DO NOT provide when making new object, or always make false
         isSupernatural: { type: Boolean, required: true },
@@ -32,5 +33,6 @@ playerSchema.pre("save", function (next) {
     next()
 })
 
+const Player = mongoose.model('Player', playerSchema)
 
-module.exports = mongoose.model('Player', playerSchema)
+module.exports = Player
