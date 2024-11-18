@@ -138,15 +138,11 @@ router.post('/signin', async (req, res) => {
 router.post('/:userId/teams', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
-    /* req.body.owner_id = req.user._id */
     user.team = req.body
-    /* user.team.owner_id = req.params.userId */
     await user.save()
 
     // Find the newly created team:
     const newTeam = user.team
-
-    /* newTeam._doc.owner_id = req.user */
 
     // Respond with the newTeam:
     res.status(201).json(newTeam)
@@ -191,12 +187,14 @@ router.put('/:userId/teams/:teamId/addplayer/:playerId', async (req, res) => {
     team.playingStyle = req.body.playingStyle || team.playingStyle
 
     if (player) {
+      player.owner_id = req.params.userId
       team.team_member_ids.push(req.params.playerId)
       player.isDrafted = true
     }
 
     await user.save()
     await player.save()
+
     res.status(200).json({ message: `Added ${player.name} to ${user.username}'s team!` })
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -214,11 +212,14 @@ router.put('/:userId/teams/:teamId/removeplayer/:playerId', async (req, res) => 
     /* team.team_member_ids.remove({ _id: req.params.playerId }) */
 
     if (player) {
-      team.team_member_ids.remove({ _id: req.params.playerId })
       player.isDrafted = false
+      player.owner_id = null
+      team.team_member_ids.remove({ _id: req.params.playerId })
     }
 
     await user.save()
+    await player.save()
+
     res.status(200).json({ message: `Removed ${player.name} to ${user.username}'s team!` })
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -231,9 +232,19 @@ ANYONE can do this as it stands */
 router.delete('/:userId/teams/:teamId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
+    const players = await Player.find({ owner_id: req.params.userId })
+
+    for (player of players) {
+      player.isDrafted = false
+      player.owner_id = null
+      await player.save()
+    }
+
     user.team.remove({ _id: req.params.teamId })
+
     await user.save()
-    res.status(200).json({ message: 'Deleted team!' })
+
+    res.status(200).json({ message: `Deleted ${user.username}'s team!` })
   } catch (error) {
     res.status(500).json({ error: error.message })
   }

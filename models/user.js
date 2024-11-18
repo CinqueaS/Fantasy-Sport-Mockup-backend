@@ -6,12 +6,11 @@ const Team = require('./team.js') // Importing team schema if we are using ID in
 const teamSchema = new mongoose.Schema(
     {
         team_member_ids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }], // Array of team member IDs, 
-        /* owner_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, */
         // use .populate to fill info for both owner and team members
         // - Jordan
         teamName: {type: String, required: true },
         motto: {type: String, required: true },
-        description: {type: String, required: true },
+        description: {type: String, required: false },
         playingStyle: {type: String, required: true },
         /* totalFantasyPoints: {type: Number } */
         // We might calculate this on front end instead
