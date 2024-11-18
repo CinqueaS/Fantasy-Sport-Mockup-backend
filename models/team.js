@@ -34,4 +34,4 @@ teamSchema.virtual('totalFantasyPoints').get(function() {
  */
 
 
-module.exports = mongoose.model('Team', teamSchema)
+/* module.exports = mongoose.model('Team', teamSchema) */

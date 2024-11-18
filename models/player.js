@@ -32,5 +32,6 @@ playerSchema.pre("save", function (next) {
     next()
 })
 
+const Player = mongoose.model('Player', playerSchema)
 
-module.exports = mongoose.model('Player', playerSchema)
+module.exports = Player

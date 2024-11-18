@@ -4,6 +4,7 @@ const router = express.Router()
 const bcrypt = require('bcrypt') // bcrypt will encrypt passwords for security purposes
 const jwt = require('jsonwebtoken') // Web token
 const User = require('../models/user.js') // import User model
+const Player = require('../models/player.js') // import Player model
 
 // We will salt the password with this many random characters
 const SALT_LENGTH = 12
@@ -19,7 +20,8 @@ http://localhost:3000/users/:userId */
 // Reads the contents of the route. a GET route
 router.get('/', async (req, res) => {
   try {
-      const foundUsers = await User.find() // Locates and spits out ALL user objects
+      const foundUsers = await User.find().populate('team.team_member_ids') // Locates and spits out ALL user objects
+      /* Populates each individual team member into an array  */
       res.status(200).json(foundUsers)
   } catch (error) {
       res.status(500).json({ error: error.message }) // 500 Internal Server Error
@@ -33,7 +35,7 @@ router.get('/:userId', async (req, res) => {
 
   try {
       // Add query to find a single user
-      const foundUser = await User.findById(targetUserID)
+      const foundUser = await User.findById(targetUserID).populate('team.team_member_ids')
 
       // If no user, show an error
       if (!foundUser) {
@@ -73,10 +75,10 @@ router.post('/signup', async (req, res) => {
         const user = await User.create({
             username: newUserName,
             hashedPassword: bcrypt.hashSync(newUserPassword, SALT_LENGTH)
-        }).populate('team_id')
+        })/* .populate('team_id') */
 
         // Should populate the team information after user is created
-        const populatedUser = await User.findById(user._id).populate('team_id')
+        /* const populatedUser = await User.findById(user._id).populate('team_id') */
 
         // Automatically signs said user in
         const token = jwt.sign(
@@ -84,7 +86,7 @@ router.post('/signup', async (req, res) => {
             process.env.JWT_SECRET
           )
 
-        res.status(201).json({ populatedUser, token })
+        res.status(201).json({ user, token })
 
     } catch (error) { // error handling
         res.status(400).json({ error: error.message })
@@ -110,7 +112,7 @@ router.post('/signin', async (req, res) => {
 
         // Populate the team field on sign-in
         // IDK where to attach this - JJC
-        const populatedUser = await User.findById(user._id).populate('team_id')
+        /* const populatedUser = await User.findById(user._id).populate('team_id') */
 
         /* res.status(200).json({ populatedUser, token }) */ //This would include the user's team data I guess
         res.status(200).json({ token })
@@ -122,6 +124,119 @@ router.post('/signin', async (req, res) => {
     } catch (error) {
       res.status(400).json({ error: error.message })
     }
-  })
+})
+
+
+  /* ============= TEAM ROUTES =================== */
+
+/* If we are nesting teamSchema into the user without ID, these routes will allow creation, update, and deletion of teams */
+
+/* POSTS a team object inside of a user! Anyone with any account can do this! */
+
+// THIS IS FUNCTIONAL
+
+router.post('/:userId/teams', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId)
+    /* req.body.owner_id = req.user._id */
+    user.team = req.body
+    /* user.team.owner_id = req.params.userId */
+    await user.save()
+
+    // Find the newly created team:
+    const newTeam = user.team
+
+    /* newTeam._doc.owner_id = req.user */
+
+    // Respond with the newTeam:
+    res.status(201).json(newTeam)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+/* UPDATE a team within a user by it's own id
+ANYONE can do this as it stands */
+
+// THIS IS FUNCTIONAL
+
+router.put('/:userId/teams/:teamId', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId)
+    const team = user.team
+
+    team.teamName = req.body.teamName || team.teamName
+    team.motto = req.body.motto || team.motto
+    team.description = req.body.description || team.description
+    team.playingStyle = req.body.playingStyle || team.playingStyle
+
+    await user.save()
+    res.status(200).json({ message: `Updated ${user.username}'s team!` })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+/* ADD a team member to the user's team array */
+
+router.put('/:userId/teams/:teamId/addplayer/:playerId', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId)
+    const player = await Player.findById(req.params.playerId)
+    const team = user.team
+
+    team.teamName = req.body.teamName || team.teamName
+    team.motto = req.body.motto || team.motto
+    team.description = req.body.description || team.description
+    team.playingStyle = req.body.playingStyle || team.playingStyle
+
+    if (player) {
+      team.team_member_ids.push(req.params.playerId)
+      player.isDrafted = true
+    }
+
+    await user.save()
+    await player.save()
+    res.status(200).json({ message: `Added ${player.name} to ${user.username}'s team!` })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+/* And this will remove a player */
+
+router.put('/:userId/teams/:teamId/removeplayer/:playerId', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId)
+    const player = await Player.findById(req.params.playerId)
+    const team = user.team
+
+    /* team.team_member_ids.remove({ _id: req.params.playerId }) */
+
+    if (player) {
+      team.team_member_ids.remove({ _id: req.params.playerId })
+      player.isDrafted = false
+    }
+
+    await user.save()
+    res.status(200).json({ message: `Removed ${player.name} to ${user.username}'s team!` })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+/* DELETE a team within a user by it's own id. By removing it from the team array
+ANYONE can do this as it stands */
+
+router.delete('/:userId/teams/:teamId', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId)
+    user.team.remove({ _id: req.params.teamId })
+    await user.save()
+    res.status(200).json({ message: 'Deleted team!' })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
 
 module.exports = router
