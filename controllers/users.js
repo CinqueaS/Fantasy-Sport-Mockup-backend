@@ -1,5 +1,5 @@
 const express = require('express')
-const router = express.Router()
+const router = express.Router() // Protecting team creation and deletion paths
 // Add bcrypt and the user model
 const bcrypt = require('bcrypt') // bcrypt will encrypt passwords for security purposes
 const jwt = require('jsonwebtoken') // Web token
