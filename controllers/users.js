@@ -142,11 +142,8 @@ router.post('/:userId/teams', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
-    if (!user._id.equals(req.user._id)) {
-      return res.status(403).send({ message: `You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`})
-    }
-
-    /* preventCrossProfileModification(res, req.user, user, `create a team`) */
+    const result = await preventCrossProfileModification(res, req.user, user, `create a team`)
+    if (result) return result
 
     user.team = req.body
     await user.save()
@@ -170,11 +167,8 @@ router.put('/:userId/teams/:teamId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
-    if (!user._id.equals(req.user._id)) {
-      return res.status(403).send(`You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`)
-    }
-
-    /* preventCrossProfileModification(res, req.user, user, `update a team`) */
+    const result = await preventCrossProfileModification(res, req.user, user, `update a team`)
+    if (result) return result
 
     const team = user.team
 
@@ -196,11 +190,9 @@ router.put('/:userId/teams/:teamId/addplayer/:playerId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
-    if (!user._id.equals(req.user._id)) {
-      return res.status(403).send(`You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`)
-    }
+    const result = await preventCrossProfileModification(res, req.user, user, `add a player`)
+    if (result) return result
 
-    /* preventCrossProfileModification(res, req.user, user, `add a player`) */
 
     const player = await Player.findById(req.params.playerId)
     const team = user.team
@@ -230,12 +222,10 @@ router.put('/:userId/teams/:teamId/addplayer/:playerId', async (req, res) => {
 router.put('/:userId/teams/:teamId/removeplayer/:playerId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
+    
+    const result = await preventCrossProfileModification(res, req.user, user, `remove a player`)
+    if (result) return result
 
-    if (!user._id.equals(req.user._id)) {
-      return res.status(403).send(`You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`)
-    }
-
-    /* preventCrossProfileModification(res, req.user, user, `remove a player`) */
 
     const player = await Player.findById(req.params.playerId)
     const team = user.team
@@ -265,11 +255,8 @@ router.delete('/:userId/teams/:teamId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
-    if (!user._id.equals(req.user._id)) {
-      return res.status(403).send(`You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`)
-    }
-
-    preventCrossProfileModification(res, req.user, user, `delete a team`)
+    const result = await preventCrossProfileModification(res, req.user, user, `delete a team`)
+    if (result) return result
 
     const players = await Player.find({ owner_id: req.params.userId })
 
