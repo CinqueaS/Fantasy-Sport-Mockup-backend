@@ -1,5 +1,6 @@
 const express = require('express')
-const router = express.Router() // Protecting team creation and deletion paths
+const router = express.Router() 
+const verifyToken = require('../middleware/verify-token.js') // Protecting team creation and deletion paths
 // Add bcrypt and the user model
 const bcrypt = require('bcrypt') // bcrypt will encrypt passwords for security purposes
 const jwt = require('jsonwebtoken') // Web token
@@ -127,7 +128,9 @@ router.post('/signin', async (req, res) => {
 })
 
 
-  /* ============= TEAM ROUTES =================== */
+/* ============= TEAM ROUTES =================== */
+
+router.use(verifyToken)
 
 /* If we are nesting teamSchema into the user without ID, these routes will allow creation, update, and deletion of teams */
 
@@ -138,6 +141,13 @@ router.post('/signin', async (req, res) => {
 router.post('/:userId/teams', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
+
+    if (!user._id.equals(req.user._id)) {
+      return res.status(403).send({ message: `You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`})
+    }
+
+    /* preventCrossProfileModification(res, req.user, user, `create a team`) */
+
     user.team = req.body
     await user.save()
 
@@ -159,6 +169,13 @@ ANYONE can do this as it stands */
 router.put('/:userId/teams/:teamId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
+
+    if (!user._id.equals(req.user._id)) {
+      return res.status(403).send(`You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`)
+    }
+
+    /* preventCrossProfileModification(res, req.user, user, `update a team`) */
+
     const team = user.team
 
     team.teamName = req.body.teamName || team.teamName
@@ -178,6 +195,13 @@ router.put('/:userId/teams/:teamId', async (req, res) => {
 router.put('/:userId/teams/:teamId/addplayer/:playerId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
+
+    if (!user._id.equals(req.user._id)) {
+      return res.status(403).send(`You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`)
+    }
+
+    /* preventCrossProfileModification(res, req.user, user, `add a player`) */
+
     const player = await Player.findById(req.params.playerId)
     const team = user.team
 
@@ -206,6 +230,13 @@ router.put('/:userId/teams/:teamId/addplayer/:playerId', async (req, res) => {
 router.put('/:userId/teams/:teamId/removeplayer/:playerId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
+
+    if (!user._id.equals(req.user._id)) {
+      return res.status(403).send(`You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`)
+    }
+
+    /* preventCrossProfileModification(res, req.user, user, `remove a player`) */
+
     const player = await Player.findById(req.params.playerId)
     const team = user.team
 
@@ -233,6 +264,13 @@ ANYONE can do this as it stands */
 router.delete('/:userId/teams/:teamId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
+
+    if (!user._id.equals(req.user._id)) {
+      return res.status(403).send(`You are on ${user.username}'s profile! You are not allowed to do that! Please shove off, ${req.user.username}`)
+    }
+
+    preventCrossProfileModification(res, req.user, user, `delete a team`)
+
     const players = await Player.find({ owner_id: req.params.userId })
 
     for (player of players) {
@@ -265,4 +303,11 @@ async function updateFantasyPoints(foundTeam) {
 
   return sum
 }
+
+async function preventCrossProfileModification(res, loggedUser, victimUser, action) {
+  if (!victimUser._id.equals(loggedUser._id)) {
+    return res.status(403).send(`Stop! ${loggedUser.username}! You have violated the law! You are on ${victimUser.username}'s profile! You are not allowed to ${action} for ${victimUser.username}! Please shove off, ${loggedUser.username}!`)
+  }
+}
+
 module.exports = router
