@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     // res.json({ message: 'Index route'})
     try {
-        const foundPlayers = await Player.find() // Locates and spits out ALL player objects
+        const foundPlayers = await Player.find().populate('owner_id') // Locates and spits out ALL player objects
         res.status(200).json(foundPlayers)
     } catch (error) {
         res.status(500).json({ error: error.message }) // 500 Internal Server Error
@@ -38,12 +38,12 @@ router.get('/', async (req, res) => {
 // READ - GET - /players/:playerId
 // SHOW route, shows a specific player
 router.get('/:playerId', async (req, res) => {
-    // res.json({ message: `Show route for param ${req.params.playerId}`})
+    
     let targetPlayerID = req.params.playerId
 
     try {
         // Add query to find a single player
-        const foundPlayer = await Player.findById(targetPlayerID)
+        const foundPlayer = await Player.findById(targetPlayerID).populate('owner_id')
 
         // If no player, show an error
         if (!foundPlayer) {
@@ -66,8 +66,6 @@ router.get('/:playerId', async (req, res) => {
 // DELETE - DELETE - /players/:playerId
 // Deletes the given player by targetting its ID
 router.delete('/:playerId', async (req, res) => {
-
-    /* res.json({ message: `DELETE route for param ${req.params.playerId}`}) */
 
     let targetPlayerID = req.params.playerId
 
@@ -96,7 +94,7 @@ router.delete('/:playerId', async (req, res) => {
 // UPDATE - PUT - /players/:playerId
 // Updates the information of an existing player
 router.put('/:playerId', async (req, res) => {
-    // res.json({ message: `UPDATE route for param ${req.params.playerId}`})
+
     let targetPlayerID = req.params.playerId
     let newPlayerData = req.body
 

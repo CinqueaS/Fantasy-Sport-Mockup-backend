@@ -39,6 +39,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNpbHZpbyBDYXJ1c28iLCJfaWQ
 (TOKEN)
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlZpY3RvciBEZWxnYWRvIiwiX2lkIjoiNjczYjZjMjdhN2MzMTU5ZDhjYzVjNmI4IiwiaWF0IjoxNzMxOTQ3NTU4fQ.Zazv2wcMTZiaEdxT1CZZiLivh_GdzsvqSn2i730qwQ0
 
+
 {
   "username": "Diana Burnwood",
   "password": "untouchable!"
@@ -48,11 +49,22 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlZpY3RvciBEZWxnYWRvIiwiX2l
 (TOKEN)
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkRpYW5hIEJ1cm53b29kIiwiX2lkIjoiNjczYjZjMDhhN2MzMTU5ZDhjYzVjNmI1IiwiaWF0IjoxNzMxOTQ3NTI4fQ.nmCGJLTMVD0H6TqI3e7QxtQsKqWPbXzDJJCs2rRe9sI
 
+
 {
   "username": "Lucas Grey",
   "password": "militia"
 }
-ID
+(ID)
 673b6ba7a7c3159d8cc5c6b2
-TOKEN
+(TOKEN)
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikx1Y2FzIEdyZXkiLCJfaWQiOiI2NzNiNmJhN2E3YzMxNTlkOGNjNWM2YjIiLCJpYXQiOjE3MzE5NDc0MzF9.6o8hgDNPpuDkHSoARhZFKReFCxXW4G8IIoQqm5cUNZI
+
+
+{
+  "username": "Yuki Yamazaki",
+  "password": "yakuza"
+}
+(ID)
+673c9c649e4fcfb4a22f30f1
+(TOKEN)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ill1a2kgWWFtYXpha2kiLCJfaWQiOiI2NzNjOWM2NDllNGZjZmI0YTIyZjMwZjEiLCJpYXQiOjE3MzIwMjU0NDR9.jzrooffDuvvJbimVTeFdaKldV_CtdnIX26wQWQe0dMA
