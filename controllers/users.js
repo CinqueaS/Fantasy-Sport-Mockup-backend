@@ -138,7 +138,7 @@ router.use(verifyToken)
 
 // THIS IS FUNCTIONAL
 
-router.post('/:userId/teams', async (req, res) => {
+router.post('/:userId/team', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
@@ -163,7 +163,7 @@ ANYONE can do this as it stands */
 
 // THIS IS FUNCTIONAL
 
-router.put('/:userId/teams/:teamId', async (req, res) => {
+router.put('/:userId/team/:teamId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
@@ -186,7 +186,7 @@ router.put('/:userId/teams/:teamId', async (req, res) => {
 
 /* ADD a team member to the user's team array */
 
-router.put('/:userId/teams/:teamId/addplayer/:playerId', async (req, res) => {
+router.put('/:userId/team/:teamId/add-player/:playerId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
@@ -219,7 +219,7 @@ router.put('/:userId/teams/:teamId/addplayer/:playerId', async (req, res) => {
 
 /* And this will remove a player */
 
-router.put('/:userId/teams/:teamId/removeplayer/:playerId', async (req, res) => {
+router.put('/:userId/team/:teamId/remove-player/:playerId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
     
@@ -251,7 +251,7 @@ router.put('/:userId/teams/:teamId/removeplayer/:playerId', async (req, res) => 
 /* DELETE a team within a user by it's own id. By removing it from the team array
 ANYONE can do this as it stands */
 
-router.delete('/:userId/teams/:teamId', async (req, res) => {
+router.delete('/:userId/team/:teamId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 

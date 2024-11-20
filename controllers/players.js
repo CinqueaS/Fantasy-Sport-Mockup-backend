@@ -35,6 +35,80 @@ router.get('/', async (req, res) => {
     }
 })
 
+// READ - GET - /players/name-search/:playerName
+// INDEX route, gets ALL players that match a user search
+router.get('/name-search/:userSearch', async (req, res) => {
+    
+    try {
+        const userSearch = req.params.userSearch.toLowerCase()
+        const foundPlayers = await Player.find().populate('owner_id') // Locates and spits out ALL player objects
+        let results = []
+
+        for (player of foundPlayers) {
+            if (player.name.toLowerCase().includes(userSearch)) {
+                results.push(player)
+            } 
+        }
+
+        if (results.length > 0) {
+            res.status(200).json(results)
+        } else {
+        } res.status(404).json({ error: `No results for "${userSearch}"!`})
+ 
+    } catch (error) {
+        res.status(500).json({ error: error.message }) // 500 Internal Server Error
+        }
+})
+
+// READ - GET - /players/supernatural
+// INDEX route, gets ALL players that are supernatural
+router.get('/supernatural', async (req, res) => {
+    
+    try {
+        const superPlayers = await Player.find({isSupernatural: true}).populate('owner_id') // Locates and spits out ALL player objects
+        res.status(200).json(superPlayers)
+    } catch (error) {
+        res.status(500).json({ error: error.message }) // 500 Internal Server Error
+        }
+})
+
+// READ - GET - /players/supernatural
+// INDEX route, gets ALL players that are NOT supernatural
+router.get('/normal', async (req, res) => {
+    
+    try {
+        const normalPlayers = await Player.find({isSupernatural: false}).populate('owner_id') // Locates and spits out ALL player objects
+        res.status(200).json(normalPlayers)
+    } catch (error) {
+        res.status(500).json({ error: error.message }) // 500 Internal Server Error
+        }
+})
+
+// READ - GET - /players/supernatural
+// INDEX route, gets ALL players that are drafted
+router.get('/drafted', async (req, res) => {
+    
+    try {
+        const draftedPlayers = await Player.find({isDrafted: true}).populate('owner_id') // Locates and spits out ALL player objects
+        res.status(200).json(draftedPlayers)
+    } catch (error) {
+        res.status(500).json({ error: error.message }) // 500 Internal Server Error
+        }
+})
+
+// READ - GET - /players/supernatural
+// INDEX route, gets ALL players that are NOT drafted
+router.get('/available', async (req, res) => {
+    
+    try {
+        const availablePlayers = await Player.find({isDrafted: false}).populate('owner_id') // Locates and spits out ALL player objects
+        res.status(200).json(availablePlayers)
+    } catch (error) {
+        res.status(500).json({ error: error.message }) // 500 Internal Server Error
+        }
+})
+
+
 // READ - GET - /players/:playerId
 // SHOW route, shows a specific player
 router.get('/:playerId', async (req, res) => {
@@ -62,6 +136,8 @@ router.get('/:playerId', async (req, res) => {
           }
       }
 })
+
+
 
 // DELETE - DELETE - /players/:playerId
 // Deletes the given player by targetting its ID
