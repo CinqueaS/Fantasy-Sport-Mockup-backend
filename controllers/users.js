@@ -23,6 +23,7 @@ router.get('/', async (req, res) => {
   try {
       const foundUsers = await User.find().populate('team.team_member_ids') // Locates and spits out ALL user objects
       /* Populates each individual team member into an array  */
+      shuffleResponseArray(foundUsers)
       res.status(200).json(foundUsers)
   } catch (error) {
       res.status(500).json({ error: error.message }) // 500 Internal Server Error
@@ -76,10 +77,7 @@ router.post('/signup', async (req, res) => {
         const user = await User.create({
             username: newUserName,
             hashedPassword: bcrypt.hashSync(newUserPassword, SALT_LENGTH)
-        })/* .populate('team_id') */
-
-        // Should populate the team information after user is created
-        /* const populatedUser = await User.findById(user._id).populate('team_id') */
+        })
 
         // Automatically signs said user in
         const token = jwt.sign(
@@ -111,11 +109,6 @@ router.post('/signin', async (req, res) => {
             process.env.JWT_SECRET
         )
 
-        // Populate the team field on sign-in
-        // IDK where to attach this - JJC
-        /* const populatedUser = await User.findById(user._id).populate('team_id') */
-
-        /* res.status(200).json({ populatedUser, token }) */ //This would include the user's team data I guess
         res.status(200).json({ token })
 
       } else { // Otherwise, don't let them in
@@ -295,6 +288,10 @@ async function preventCrossProfileModification(res, loggedUser, victimUser, acti
   if (!victimUser._id.equals(loggedUser._id)) {
     return res.status(403).send(`Stop! ${loggedUser.username}! You have violated the law! You are on ${victimUser.username}'s profile! You are not allowed to ${action} for ${victimUser.username}! Please shove off, ${loggedUser.username}!`)
   }
+}
+
+function shuffleResponseArray(responseArray) {
+  responseArray.sort((a, b) => 0.5 - Math.random())
 }
 
 module.exports = router

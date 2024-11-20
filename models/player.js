@@ -6,7 +6,7 @@ const playerSchema = new mongoose.Schema(
         gender: { type: String, required: true },
         position: { type: String, required: true },
         species: { type: String, default: "Human" },
-        owner_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        owner_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Automatically applied on front end, DO NOT ADD 
 
         isDrafted: { type: Boolean, default: false }, // DO NOT provide when making new object, or always make false
         isSupernatural: { type: Boolean, required: true },
