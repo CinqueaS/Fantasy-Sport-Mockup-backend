@@ -29,6 +29,7 @@ router.get('/', async (req, res) => {
     // res.json({ message: 'Index route'})
     try {
         const foundPlayers = await Player.find().populate('owner_id') // Locates and spits out ALL player objects
+        shuffleResponseArray(foundPlayers)
         res.status(200).json(foundPlayers)
     } catch (error) {
         res.status(500).json({ error: error.message }) // 500 Internal Server Error
@@ -51,6 +52,7 @@ router.get('/name-search/:userSearch', async (req, res) => {
         }
 
         if (results.length > 0) {
+            shuffleResponseArray(results)
             res.status(200).json(results)
         } else {
         } res.status(404).json({ error: `No results for "${userSearch}"!`})
@@ -66,6 +68,7 @@ router.get('/supernatural', async (req, res) => {
     
     try {
         const superPlayers = await Player.find({isSupernatural: true}).populate('owner_id') // Locates and spits out ALL player objects
+        shuffleResponseArray(superPlayers)
         res.status(200).json(superPlayers)
     } catch (error) {
         res.status(500).json({ error: error.message }) // 500 Internal Server Error
@@ -78,6 +81,7 @@ router.get('/normal', async (req, res) => {
     
     try {
         const normalPlayers = await Player.find({isSupernatural: false}).populate('owner_id') // Locates and spits out ALL player objects
+        shuffleResponseArray(normalPlayers)
         res.status(200).json(normalPlayers)
     } catch (error) {
         res.status(500).json({ error: error.message }) // 500 Internal Server Error
@@ -90,6 +94,7 @@ router.get('/drafted', async (req, res) => {
     
     try {
         const draftedPlayers = await Player.find({isDrafted: true}).populate('owner_id') // Locates and spits out ALL player objects
+        shuffleResponseArray(draftedPlayers)
         res.status(200).json(draftedPlayers)
     } catch (error) {
         res.status(500).json({ error: error.message }) // 500 Internal Server Error
@@ -102,6 +107,7 @@ router.get('/available', async (req, res) => {
     
     try {
         const availablePlayers = await Player.find({isDrafted: false}).populate('owner_id') // Locates and spits out ALL player objects
+        shuffleResponseArray(availablePlayers)
         res.status(200).json(availablePlayers)
     } catch (error) {
         res.status(500).json({ error: error.message }) // 500 Internal Server Error
@@ -214,6 +220,9 @@ async function updateFantasyPoints(foundPlayer, newPlayerData) {
     return updatedPlayer
 }
 
+function shuffleResponseArray(responseArray) {
+    responseArray.sort((a, b) => 0.5 - Math.random())
+}
 
 // Export the router at the bottom of the file
 module.exports = router
