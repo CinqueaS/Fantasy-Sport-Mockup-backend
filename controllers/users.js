@@ -286,7 +286,7 @@ async function updateFantasyPoints(foundTeam) {
 
 async function preventCrossProfileModification(res, loggedUser, victimUser, action) {
   if (!victimUser._id.equals(loggedUser._id)) {
-    return res.status(403).send(`Stop! ${loggedUser.username}! You have violated the law! You are on ${victimUser.username}'s profile! You are not allowed to ${action} for ${victimUser.username}! Please shove off, ${loggedUser.username}!`)
+    return res.status(403).json({message: `Stop! ${loggedUser.username}! You have violated the law! You are on ${victimUser.username}'s profile! You are not allowed to ${action} for ${victimUser.username}! Please shove off, ${loggedUser.username}!`})
   }
 }
 
