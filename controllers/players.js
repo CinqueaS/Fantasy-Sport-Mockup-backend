@@ -12,7 +12,6 @@ const router = express.Router()
 // Creates a new player object for the API
 
 router.post('/', async (req, res) => {
-    // res.json({ message: 'Create route'})
     let newPlayerObject = req.body
     try {
         // Create a new player with the data from req.body
@@ -26,7 +25,6 @@ router.post('/', async (req, res) => {
 // READ - GET - /players
 // Reads the contents of the route. a GET route
 router.get('/', async (req, res) => {
-    // res.json({ message: 'Index route'})
     try {
         const foundPlayers = await Player.find().populate('owner_id') // Locates and spits out ALL player objects
         shuffleResponseArray(foundPlayers)
