@@ -7,23 +7,7 @@ const verifyToken = require('../middleware/verify-token.js')
 
 /* The index-slash ('/') is being used because we are ALREADY inside of '/players' */
 
-/* Auth required to CRUD player object */
-router.use(verifyToken)
-
-// CREATE - POST - /players
-// Creates a new player object for the API
-
-router.post('/', async (req, res) => {
-    // res.json({ message: 'Create route'})
-    let newPlayerObject = req.body
-    try {
-        // Create a new player with the data from req.body
-        const createdPlayer = await Player.create(newPlayerObject)
-        res.status(201).json(createdPlayer) // 201 Created
-    } catch (error) { // Error handling
-        res.status(500).json({ error: error.message })
-    }
-})
+/* ============ PUBLIC ROUTES ================ */
 
 // READ - GET - /players
 // Reads the contents of the route. a GET route
@@ -145,7 +129,25 @@ router.get('/:playerId', async (req, res) => {
       }
 })
 
+/* ============ PROTECTED ROUTES ================ */
 
+/* Auth required to CUD player object */
+router.use(verifyToken)
+
+// CREATE - POST - /players
+// Creates a new player object for the API
+
+router.post('/', async (req, res) => {
+    // res.json({ message: 'Create route'})
+    let newPlayerObject = req.body
+    try {
+        // Create a new player with the data from req.body
+        const createdPlayer = await Player.create(newPlayerObject)
+        res.status(201).json(createdPlayer) // 201 Created
+    } catch (error) { // Error handling
+        res.status(500).json({ error: error.message })
+    }
+})
 
 // DELETE - DELETE - /players/:playerId
 // Deletes the given player by targetting its ID
