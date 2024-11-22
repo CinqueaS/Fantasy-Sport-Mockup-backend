@@ -127,16 +127,18 @@ router.use(verifyToken)
 
 /* If we are nesting teamSchema into the user without ID, these routes will allow creation, update, and deletion of teams */
 
-/* POSTS a team object inside of a user! Anyone with any account can do this! */
+/* POSTS a team object inside of a user! For a user! */
 
-// THIS IS FUNCTIONAL
+
 
 router.post('/:userId/team', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
     const result = await preventCrossProfileModification(res, req.user, user, `create a team`)
-    if (result) return result
+    if (result) {
+      return result
+    }
 
     user.team = req.body
     await user.save()
@@ -151,17 +153,17 @@ router.post('/:userId/team', async (req, res) => {
   }
 })
 
-/* UPDATE a team within a user by it's own id
-ANYONE can do this as it stands */
+/* UPDATE a team within a user by it's own id */
 
-// THIS IS FUNCTIONAL
 
 router.put('/:userId/team/:teamId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
     const result = await preventCrossProfileModification(res, req.user, user, `update a team`)
-    if (result) return result
+    if (result) {
+      return result
+    }
 
     const team = user.team
 
@@ -177,17 +179,23 @@ router.put('/:userId/team/:teamId', async (req, res) => {
   }
 })
 
-/* ADD a team member to the user's team array */
+/* ADD a team member to the user's team array.  */
 
 router.put('/:userId/team/:teamId/add-player/:playerId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
 
     const result = await preventCrossProfileModification(res, req.user, user, `add a player`)
-    if (result) return result
+    if (result) {
+      return result
+    }
 
+    const player = await Player.findById(req.params.playerId).populate('owner_id')
+    const otherResult = checkIfDrafted(res, player, user)
+    if (otherResult) {
+      return otherResult
+    }
 
-    const player = await Player.findById(req.params.playerId)
     const team = user.team
 
     team.teamName = req.body.teamName || team.teamName
@@ -217,13 +225,15 @@ router.put('/:userId/team/:teamId/remove-player/:playerId', async (req, res) => 
     const user = await User.findById(req.params.userId)
     
     const result = await preventCrossProfileModification(res, req.user, user, `remove a player`)
-    if (result) return result
+    if (result) {
+      return result
+    }
 
 
-    const player = await Player.findById(req.params.playerId)
+    const player = await Player.findById(req.params.playerId).populate('owner_id')
+
     const team = user.team
 
-    /* team.team_member_ids.remove({ _id: req.params.playerId }) */
 
     if (player) {
       player.isDrafted = false
@@ -249,7 +259,9 @@ router.delete('/:userId/team/:teamId', async (req, res) => {
     const user = await User.findById(req.params.userId)
 
     const result = await preventCrossProfileModification(res, req.user, user, `delete a team`)
-    if (result) return result
+    if (result) {
+      return result
+    }
 
     const players = await Player.find({ owner_id: req.params.userId })
 
@@ -286,6 +298,10 @@ async function updateFantasyPoints(foundTeam) {
 
 async function preventCrossProfileModification(res, loggedUser, victimUser, action) {
   if (!victimUser._id.equals(loggedUser._id)) {
+    // return { 
+    //   status: 403, 
+    //   message: `Stop! ${loggedUser.username}! You have violated the law! You are on ${victimUser.username}'s profile! You are not allowed to ${action} for ${victimUser.username}! Please shove off, ${loggedUser.username}!` 
+    // }
     return res.status(403).json({message: `Stop! ${loggedUser.username}! You have violated the law! You are on ${victimUser.username}'s profile! You are not allowed to ${action} for ${victimUser.username}! Please shove off, ${loggedUser.username}!`})
   }
 }
@@ -293,5 +309,30 @@ async function preventCrossProfileModification(res, loggedUser, victimUser, acti
 function shuffleResponseArray(responseArray) {
   responseArray.sort((a, b) => 0.5 - Math.random())
 }
+
+function checkIfDrafted(res, player, user) {
+  if (player.isDrafted) {
+    if (player.owner_id._id === user._id) {
+      // return { 
+      //   status: 403, 
+      //   message: `Sorry, ${player.name} has already been drafted by ${player.owner_id.username}` 
+      // }
+      return res.status(403).json({message: `Sorry, ${player.name} has already been drafted by ${player.owner_id.username}`})
+    } else {
+      // return { 
+      //   status: 403, 
+      //   message: `Don't be greedy, ${user.username}! You already drafted, ${player.name}` 
+      // }
+      return res.status(403).json({message: `Don't be greedy, ${user.username}! You already drafted, ${player.name}`})
+    }
+  }
+}
+
+function checkIfDraftedSimple(res, player) {
+  if (player.isDrafted) {
+      return res.status(403).json({message: `Sorry, ${player.name} has already been drafted by ${player.owner_id.username}`})
+    }
+}
+
 
 module.exports = router
