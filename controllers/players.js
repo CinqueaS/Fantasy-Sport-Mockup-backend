@@ -1,12 +1,14 @@
 const Player = require('../models/player.js')
 const express = require('express')
 const router = express.Router()
+const verifyToken = require('../middleware/verify-token.js')
 
 /* write out controller functions here */
 
 /* The index-slash ('/') is being used because we are ALREADY inside of '/players' */
 
-/* Not using JWT token, so no auth required to create player object */
+/* Auth required to CRUD player object */
+router.use(verifyToken)
 
 // CREATE - POST - /players
 // Creates a new player object for the API
