@@ -1,32 +1,17 @@
 const Player = require('../models/player.js')
 const express = require('express')
 const router = express.Router()
+const verifyToken = require('../middleware/verify-token.js')
 
 /* write out controller functions here */
 
 /* The index-slash ('/') is being used because we are ALREADY inside of '/players' */
 
-/* Not using JWT token, so no auth required to create player object */
-
-// CREATE - POST - /players
-// Creates a new player object for the API
-
-router.post('/', async (req, res) => {
-    // res.json({ message: 'Create route'})
-    let newPlayerObject = req.body
-    try {
-        // Create a new player with the data from req.body
-        const createdPlayer = await Player.create(newPlayerObject)
-        res.status(201).json(createdPlayer) // 201 Created
-    } catch (error) { // Error handling
-        res.status(500).json({ error: error.message })
-    }
-})
+/* ============ PUBLIC ROUTES ================ */
 
 // READ - GET - /players
 // Reads the contents of the route. a GET route
 router.get('/', async (req, res) => {
-    // res.json({ message: 'Index route'})
     try {
         const foundPlayers = await Player.find().populate('owner_id') // Locates and spits out ALL player objects
         shuffleResponseArray(foundPlayers)
@@ -143,7 +128,25 @@ router.get('/:playerId', async (req, res) => {
       }
 })
 
+/* ============ PROTECTED ROUTES ================ */
 
+/* Auth required to CUD player object */
+router.use(verifyToken)
+
+// CREATE - POST - /players
+// Creates a new player object for the API
+
+router.post('/', async (req, res) => {
+    // res.json({ message: 'Create route'})
+    let newPlayerObject = req.body
+    try {
+        // Create a new player with the data from req.body
+        const createdPlayer = await Player.create(newPlayerObject)
+        res.status(201).json(createdPlayer) // 201 Created
+    } catch (error) { // Error handling
+        res.status(500).json({ error: error.message })
+    }
+})
 
 // DELETE - DELETE - /players/:playerId
 // Deletes the given player by targetting its ID

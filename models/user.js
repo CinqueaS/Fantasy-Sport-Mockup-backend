@@ -29,7 +29,6 @@ const userSchema = new mongoose.Schema(
         },
         profilePicUrl: {
             type: String,
-            // Picture source, https://www.freepik.com/premium-ai-image/dynamic-football-cartoons-bold-minimalist-helmet-clipart-with-thick-outlines_65166547.htm
             default: 'https://img.freepik.com/premium-photo/dynamic-football-cartoons-bold-minimalist-helmet-clipart-with-thick-outlines_983420-23124.jpg'
         },
         /* Nests a teamSchema object DIRECTLY into the user schema for easier access. */
@@ -54,15 +53,6 @@ if it doesn't we calculate fantasy points on the front end */
 
 // Should calculate the value of team's fantasyPoints based off the individual values
 
-/* 
-teamSchema.virtual('totalFantasyPoints').get(function() {
-    let total = 0
-    for (member of this.team_member_ids) {
-        total += member.fantasyPoints
-    }
-    return total
-})
- */
 
 const User = mongoose.model('User', userSchema)
 
