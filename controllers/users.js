@@ -105,7 +105,7 @@ router.post('/signin', async (req, res) => {
 
       if (user && bcrypt.compareSync(existingUserPassword, user.hashedPassword)) {
         const token = jwt.sign(
-            {username: user.username, _id: user._id},
+            {username: user.username, _id: user._id, team: user.team},
             process.env.JWT_SECRET
         )
 
@@ -255,6 +255,7 @@ router.put('/:userId/team/:teamId/remove-player/:playerId', async (req, res) => 
 ANYONE can do this as it stands */
 
 router.delete('/:userId/team/:teamId', async (req, res) => {
+  console.log("tried to delete")
   try {
     const user = await User.findById(req.params.userId)
 
